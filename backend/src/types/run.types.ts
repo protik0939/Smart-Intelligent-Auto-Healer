@@ -1,5 +1,5 @@
 export interface RunRequest {
-    language: string;
-    code: string;
+    script: string;
+    password: string;
   }
   

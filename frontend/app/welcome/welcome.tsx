@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 const scriptOptions = [
   "auto_heal",
@@ -18,28 +19,53 @@ export function Welcome() {
   const [activeScript, setActiveScript] = useState<string | null>(null);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const clickSound = typeof Audio !== "undefined" ? new Audio("/sounds/click.mp3") : null;
+  const [password, setPassword] = useState<string | null>(null);
 
-  const handleStartPolling = (script: string) => {
+  const handleStartPolling = async (script: string) => {
     if (loading || initialLoading || activeScript === script) return;
+
+    if (script === "auto_heal") {
+      const { value, isConfirmed } = await Swal.fire({
+        title: 'Enter Sudo Password',
+        input: 'password',
+        inputLabel: 'This script requires sudo access',
+        inputPlaceholder: 'Enter your password',
+        inputAttributes: {
+          autocapitalize: 'off',
+          autocorrect: 'off'
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Run Script',
+        cancelButtonText: 'Cancel',
+        background: '#1e1e1e',
+        color: '#fff',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33'
+      });
+
+      if (!isConfirmed || !value) return; // Cancelled or empty
+      setPassword(value); // Store password in state
+    }
 
     clickSound?.play();
     setActiveScript(script);
     setOutput(null);
 
-    const firstTimeout = setTimeout(() => {
-      fetchScript(script, true); // First fetch shows loader
+    setTimeout(() => {
+      fetchScript(script, password, true); // use state password
       const id = setInterval(() => {
-        fetchScript(script, false); // Background fetches
+        fetchScript(script, password, false); // use state password
       }, 5000);
       setIntervalId(id);
     }, 200);
   };
 
-  const fetchScript = async (script: string, initial = false) => {
+
+  const fetchScript = async (script: string, password: string | null, initial = false) => {
     if (initial) setInitialLoading(true);
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/run", { script });
+      const response = await axios.post("http://localhost:5000/run", { script, password });
       setOutput(response.data);
     } catch (error) {
       console.error(error);
@@ -93,7 +119,7 @@ export function Welcome() {
         {scriptOptions.map((option) => (
           <button
             key={option}
-            className={`btn btn-primary btn-outline hover:scale-105 transition-all duration-200 }`}
+            className={`btn btn-primary btn-outline hover:scale-105 transition-all duration-200 ${initialLoading ? 'btn-disabled' : ''} }`}
             onClick={() => handleStartPolling(option)}
           >
             {activeScript === option ? "🔁 Fetching..." : option.replace(/_/g, " ")}
@@ -122,7 +148,7 @@ export function Welcome() {
       </div>
 
       {/* Tailwind animations */}
-      <style jsx>{`
+      <style>{`
         .animate-fade-in {
           animation: fadeIn 0.4s ease-in-out;
         }
