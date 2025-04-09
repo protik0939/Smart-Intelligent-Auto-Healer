@@ -17,6 +17,7 @@ export const handleRun = (req: Request<{}, {}, RunRequest>, res: Response) => {
   // const wslScriptPath = scriptPath.replace('D:\\', '/mnt/d/').replace(/\\/g, '/'); /
 
   // Execute the shell script
+  console.log(password)
   const command = password
   ? `PASSWORD="${password}" bash "${scriptPath}"`
   : `bash "${scriptPath}"`;
