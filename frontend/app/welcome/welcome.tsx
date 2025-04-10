@@ -1,6 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import ProcessorUi from "./components/ProcessorUi";
+import type { CpuStatus, DisksStatus, MemoryStatus, NetworkUsage, OverviewData, TelegramData } from "models/types";
+import MemoryUi from "./components/MemoryUi";
+import DisksUi from "./components/DisksUi";
+import NetworkMonitor from "./components/NetworkMonitor";
+import SystemOverview from "./components/OverviewUi";
+import WebIntrgrationUi from "./components/WebIntrgrationUi";
+import AutoHealUi from "./components/AutoHealUi";
 
 const scriptOptions = [
   "auto_heal",
@@ -13,13 +21,14 @@ const scriptOptions = [
 ];
 
 export function Welcome() {
-  const [output, setOutput] = useState<string | null>(null);
+  const [output, setOutput] = useState<string | object | null>(null);
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(false);
   const [activeScript, setActiveScript] = useState<string | null>(null);
   const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
   const clickSound = typeof Audio !== "undefined" ? new Audio("/sounds/click.mp3") : null;
   const [password, setPassword] = useState<string | null>(null);
+  const [viewStatus, setViewStatus] = useState<string>("ui");
 
   const handleStartPolling = async (script: string) => {
     if (loading || initialLoading || activeScript === script) return;
@@ -57,15 +66,15 @@ export function Welcome() {
         fetchScript(script, password, false); // use state password
       }, 5000);
       setIntervalId(id);
-    }, 200);
+    }, 100);
   };
 
 
-  const fetchScript = async (script: string, password: string | null, initial = false) => {
+  const fetchScript = async (activeScript: string, password: string | null, initial = false) => {
     if (initial) setInitialLoading(true);
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:5000/run", { script, password });
+      const response = await axios.post("http://localhost:5000/run", { activeScript, password });
       setOutput(response.data);
     } catch (error) {
       console.error(error);
@@ -84,6 +93,23 @@ export function Welcome() {
       setOutput("🛑 Stopped polling.");
     }
   };
+
+
+  const handleUiView = () => {
+    if (!activeScript || viewStatus === 'ui') return;
+    handleStartPolling(`ui${activeScript}`);
+    setViewStatus("ui");
+    setActiveScript(`ui${activeScript}`);
+  };
+
+
+  const handleTerminalView = () => {
+    if (!activeScript || viewStatus === 'terminal') return;
+    handleStartPolling(`${activeScript?.slice(2)}`);
+    setViewStatus("terminal");
+    setActiveScript(`${activeScript?.slice(2)}`);
+  };
+
 
   useEffect(() => {
     return () => {
@@ -106,12 +132,9 @@ export function Welcome() {
 
       {/* Header */}
       <div className="text-center mb-10">
-        <h1 className="text-4xl font-bold text-primary mb-2 animate-fade-in">
-          🚑 Smart Intelligent Auto Healer
-        </h1>
-        <p className="text-base-content text-lg">
-          Click a button below to start auto-fetching every 5 seconds
-        </p>
+        <div className="font-bold text-primary mb-2 animate-fade-in flex items-center justify-center gap-4">
+          <img className="w-20" src='/siah.svg' alt='SIAH' /> <div className="flex flex-col items-start"><h1>Smart</h1><h1>Intelligent</h1><h1>Auto Healer</h1></div>
+        </div>
       </div>
 
       {/* Buttons Grid */}
@@ -120,9 +143,9 @@ export function Welcome() {
           <button
             key={option}
             className={`btn btn-primary btn-outline hover:scale-105 transition-all duration-200 ${initialLoading ? 'btn-disabled' : ''} }`}
-            onClick={() => handleStartPolling(option)}
+            onClick={() => handleStartPolling(viewStatus === "ui" ? `ui${option}` : option)}
           >
-            {activeScript === option ? "🔁 Fetching..." : option.replace(/_/g, " ")}
+            {activeScript === option || activeScript === `ui${option}` ? "🔁 Fetching..." : option.replace(/_/g, " ")}
           </button>
         ))}
         {activeScript && (
@@ -135,17 +158,51 @@ export function Welcome() {
         )}
       </div>
 
+      <div role="tablist" className={`tabs tabs-border mt-10 ${activeScript ? '' : 'hidden'}`}>
+        <button onClick={handleUiView} role="tab" className={`tab ${viewStatus === "ui" ? "tab-active" : ""}`}>UI View</button>
+        <button onClick={handleTerminalView} role="tab" className={`tab ${viewStatus === "terminal" ? "tab-active" : ""}`}>Terminal View</button>
+      </div>
+
       {/* Output */}
       <div className="mt-10 w-full max-w-4xl">
-        {output && (
+        {output && viewStatus === "terminal" && (
           <div className="mt-6 p-4 bg-base-100 rounded-box shadow-lg animate-fade-in">
             <h3 className="text-xl font-semibold mb-2 text-secondary">Output:</h3>
             <pre className="whitespace-pre-wrap break-words text-sm text-base-content bg-base-300 p-4 rounded-md">
-              {output}
+              {typeof output === "string" ? output : JSON.stringify(output, null, 2)}
             </pre>
           </div>
         )}
       </div>
+
+      <div className="mt-10 w-full max-w-4xl">
+        {output && viewStatus === "ui" && (
+          <div className="mt-6 p-4 bg-base-100 rounded-box shadow-lg animate-fade-in">
+            {activeScript === "uiprocessor" && (
+              <ProcessorUi object={output as CpuStatus[]} />
+            )}
+            {activeScript === "uimemory" && (
+              <MemoryUi object={output as MemoryStatus} />
+            )}
+            {activeScript === "uidisks" && (
+              <DisksUi object={output as DisksStatus[]} />
+            )}
+            {activeScript === "uinetwork" && (
+              <NetworkMonitor object={output as NetworkUsage} />
+            )}
+            {activeScript === "uioverview" && (
+              <SystemOverview object={output as OverviewData} />
+            )}
+            {activeScript === "uiweb_integration" && (
+              <WebIntrgrationUi object={output as TelegramData} />
+            )}
+            {activeScript === "uiauto_heal" && (
+              <AutoHealUi />
+            )}
+          </div>
+        )}
+      </div>
+
 
       {/* Tailwind animations */}
       <style>{`

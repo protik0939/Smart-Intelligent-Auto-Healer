@@ -11,7 +11,7 @@ fi
 
 # Free RAM cache
 sync; 
-sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches'
+echo "$PASSWORD" | sudo -S sh -c 'echo 3 > /proc/sys/vm/drop_caches'
 
 # Clean Disk
 sudo rm -rf /tmp/*

@@ -5,19 +5,18 @@ import path from 'path';
 import { RunRequest } from '../types/run.types';
 
 export const handleRun = (req: Request<{}, {}, RunRequest>, res: Response) => {
-  const { script, password } = req.body;
+  const { activeScript, password } = req.body;
 
-  if (!script) {
+  if (!activeScript) {
     return res.status(400).send('❌ Script name is required.');
   }
 
   // Path to the shell scripts folder
-  const scriptPath = path.resolve(__dirname, '../../scripts/', `${script}.sh`);
+  const scriptPath = path.resolve(__dirname, '../../scripts/', `${activeScript}.sh`);
 
   // const wslScriptPath = scriptPath.replace('D:\\', '/mnt/d/').replace(/\\/g, '/'); /
 
   // Execute the shell script
-  console.log(password)
   const command = password
   ? `PASSWORD="${password}" bash "${scriptPath}"`
   : `bash "${scriptPath}"`;

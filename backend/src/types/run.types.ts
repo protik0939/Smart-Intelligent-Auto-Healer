@@ -1,5 +1,4 @@
 export interface RunRequest {
-    script: string;
-    password: string;
-  }
-  
+  activeScript: string;
+  password: string;
+}
