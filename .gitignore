@@ -1,3 +1,4 @@
 .env
 backend/scripts/uiweb_integration.sh
 backend/scripts/web_integration.sh
+backend/scripts/web_integration.sh
