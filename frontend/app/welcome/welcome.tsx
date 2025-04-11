@@ -145,7 +145,7 @@ export function Welcome() {
             className={`btn btn-primary btn-outline hover:scale-105 transition-all duration-200 ${initialLoading ? 'btn-disabled' : ''} }`}
             onClick={() => handleStartPolling(viewStatus === "ui" ? `ui${option}` : option)}
           >
-            {activeScript === option || activeScript === `ui${option}` ? "🔁 Fetching..." : option.replace(/_/g, " ")}
+            {activeScript === option || activeScript === `ui${option}` ? "🔁 Fetching..." : option.replace(/_/g, " ").replace(/^\w/, c => c.toUpperCase())}
           </button>
         ))}
         {activeScript && (

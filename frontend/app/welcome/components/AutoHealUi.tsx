@@ -9,7 +9,7 @@ export default function AutoHealUi() {
     const autoHeal = async () => {
         setLoading(true);
         const { value: password } = await Swal.fire({
-            title: 'Enter Sudo Password',
+            title: 'Enter Super User Password',
             input: 'password',
             inputLabel: 'Password',
             inputPlaceholder: 'Enter your password',
