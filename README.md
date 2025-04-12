@@ -1,15 +1,37 @@
-# Smart Intelligent Auto Healer
+# 🚑 Smart Intelligent Auto Healer
 
-**Smart Intelligent Auto Healer** is an AI-powered automation tool designed to monitor and automatically resolve common issues in software systems. It leverages shell scripting and TypeScript to detect, diagnose, and heal backend service errors without manual intervention.
+**Smart Intelligent Auto Healer** is a system monitoring and self-healing automation tool that provides real-time diagnostics and automated recovery for your PC. It uses Bash scripts to gather system insights and perform actions, all wrapped in a sleek graphical and terminal-based UI built with React.js and Node.js.
 
 ---
 
-## 🚀 Features
+## 🌟 Key Features
 
-- **Self-Healing Backend**: Automatically detects and resolves common backend errors.
-- **Shell Script Automation**: Utilizes shell scripts for efficient system operations.
-- **TypeScript Integration**: Incorporates TypeScript for robust backend development.
-- **Modular Architecture**: Structured with separate `frontend` and `backend` directories for clarity and maintainability.
+✅ **Auto-Heal**  
+Automatically resolves common system-level issues using Bash scripts.
+
+✅ **System Overview**  
+See real-time stats on CPU, Memory, Disk, and Network in a graphical + terminal view.
+
+✅ **Disk Monitor**  
+View available and used storage space across mounted drives.
+
+✅ **Memory Monitor**  
+Keep an eye on RAM usage, available memory, and swap status.
+
+✅ **Network Monitor**  
+Monitor current upload/download activity, IP addresses, and interface info.
+
+✅ **Telegram API Integration**  
+Send status updates or alerts to a Telegram channel/group/chat with a single click.
+
+---
+
+## 🧠 How It Works
+
+- **Bash-Powered Monitoring**: The core data collection and healing logic is implemented using `.sh` Bash scripts.
+- **Node.js Backend**: Executes the bash scripts, processes their output (usually as JSON), and serves it to the frontend.
+- **React Frontend**: Displays the system data in both terminal-style view and modern graphical charts.
+- **Telegram Integration**: Trigger backend endpoints that use `curl` with Telegram Bot API to send messages programmatically.
 
 ---
 
@@ -18,7 +40,7 @@
 ```
 Smart-Intelligent-Auto-Healer/
 ├── backend/            # Backend services and logic
-   ├── scripts/  # Shell scripts for automation
+│   ├── scripts/        # Shell scripts for automation
 ├── frontend/           # Frontend interface
 ├── .gitignore          # Git ignore file
 └── README.md           # Project documentation
@@ -26,89 +48,91 @@ Smart-Intelligent-Auto-Healer/
 
 ---
 
-## 🛠️ Installation
+## ⚙️ Getting Started
 
-1. **Clone the repository**:
+### 1. Clone the Repository
 
-   ```bash
-   git clone https://github.com/protik0939/Smart-Intelligent-Auto-Healer.git
-   cd Smart-Intelligent-Auto-Healer
-   ```
+```bash
+git clone https://github.com/protik0939/Smart-Intelligent-Auto-Healer.git
+cd Smart-Intelligent-Auto-Healer
+```
 
-2. **Install dependencies in both frontend and backend**:
+### 2. Install Dependencies
 
-   ```bash
-   cd backend
-   npm install
+```bash
+cd backend
+npm install
 
-   cd frontend
-   npm install
-   ```
+cd frontend
+npm install
+```
 
-3. **Set execute permissions (if needed)**:
+### 3. Set Execute Permissions (if needed)
 
-   If the backend throws permission errors, run:
+If backend scripts throw permission errors, run:
 
-   ```bash
-   chmod +x ./scripts/*.sh
-   chmod +x ./node_modules/.bin/ts-node
-   chmod +x ./node_modules/.bin/nodemon
-   ```
-
----
-
-## ⚙️ Usage
-
-1. **Start the backend**:
-
-   ```bash
-   cd backend
-   npm run dev
-   ```
-
-2. **Start the frontend** (in a new terminal):
-
-   ```bash
-   cd frontend
-   npm run dev
-   ```
-
-3. Open the application in your browser (usually at `http://localhost:5173` or `3000` depending on your setup).
+```bash
+chmod +x ./scripts/*.sh
+chmod +x ./node_modules/.bin/ts-node
+chmod +x ./node_modules/.bin/nodemon
+```
 
 ---
 
-## 📌 Notes
+## 🚀 Running the App
 
-- Ensure all shell scripts in the `scripts/` directory have execute permissions.
-- Make sure `nodemon` and `ts-node` are properly installed for backend development.
+### Terminal 1 – Backend:
+
+```bash
+cd backend
+npm run dev
+```
+
+### Terminal 2 – Frontend:
+
+```bash
+cd frontend
+npm run dev
+```
+
+Then open: [http://localhost:5173](http://localhost:5173)
 
 ---
 
-## 🛠 Technologies Used
+## 🔌 Telegram Integration
 
-- TypeScript
-- Shell Scripting
-- Node.js
-- React.js
-- Express.js
+Your project integrates with the **Telegram Bot API**. On clicking the Telegram button in the UI, the backend triggers shell scripts to send system updates or alert messages to your Telegram group/channel using `curl`.
+
+You can configure your Telegram bot token and chat ID in a `.env` file or directly inside the script (based on your current setup).
 
 ---
+
+## 🧪 Technologies Used
+
+- 🐚 Bash Shell Scripting
+- ⚙️ Node.js + Express.js
+- ⚛️ React.js
+- 📊 Chart.js or similar (for graphs)
+- 🌐 Telegram Bot API
+
+---
+
 
 ## 👨‍💻 Author
 
-- **Jubair Amin Siyum**
+- **Jubair Amin Siyum**  
   - GitHub: [jubairsiyum](https://github.com/jubairsiyum)
-- **Sadat Alam Protik**
+- **Sadat Alam Protik**  
   - GitHub: [protik0939](https://github.com/protik0939)
-- **Ishmak Rahat Rafi**
+- **Ishmak Rahat Rafi**  
   - GitHub: [Rafi2046](https://github.com/Rafi2046)
-- **Shakib**
+- **Shakib**  
   - GitHub: [sHakibMusfiqur](https://github.com/sHakibMusfiqur)
-- **Hasan Jarif**
+- **Hasan Jarif**  
   - GitHub: [jarif12538](https://github.com/jarif12538)
 
 ---
 
-## 📄 License
+## 📜 License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE)
