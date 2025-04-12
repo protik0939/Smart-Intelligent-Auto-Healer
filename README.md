@@ -84,6 +84,16 @@ Smart-Intelligent-Auto-Healer/
 
 ---
 
+## 🛠 Technologies Used
+
+- TypeScript
+- Shell Scripting
+- Node.js
+- React.js
+- Express.js
+
+---
+
 ## 👨‍💻 Author
 
 - **Jubair Amin Siyum**
