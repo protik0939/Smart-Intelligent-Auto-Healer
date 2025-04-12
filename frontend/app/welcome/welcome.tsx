@@ -21,7 +21,7 @@ const scriptOptions = [
 ];
 
 export function Welcome() {
-  const [output, setOutput] = useState<string | object | null>(null);
+  const [output, setOutput] = useState<string | object | null>("stop");
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(false);
   const [activeScript, setActiveScript] = useState<string | null>(null);
@@ -90,7 +90,7 @@ export function Welcome() {
       clearInterval(intervalId);
       setIntervalId(null);
       setActiveScript(null);
-      setOutput("🛑 Stopped polling.");
+      setOutput("stop");
     }
   };
 
@@ -117,6 +117,7 @@ export function Welcome() {
     };
   }, [intervalId]);
 
+
   return (
     <div className="relative min-h-screen bg-base-200 flex flex-col items-center p-8 overflow-hidden">
       {/* Loader Overlay */}
@@ -136,7 +137,6 @@ export function Welcome() {
           <img className="w-20" src='/siah.svg' alt='SIAH' /> <div className="flex flex-col items-start"><h1>Smart</h1><h1>Intelligent</h1><h1>Auto Healer</h1></div>
         </div>
       </div>
-
       {/* Buttons Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full max-w-4xl">
         {scriptOptions.map((option) => (
@@ -163,45 +163,56 @@ export function Welcome() {
         <button onClick={handleTerminalView} role="tab" className={`tab ${viewStatus === "terminal" ? "tab-active" : ""}`}>Terminal View</button>
       </div>
 
-      {/* Output */}
-      <div className="mt-10 w-full max-w-4xl">
-        {output && viewStatus === "terminal" && (
-          <div className="mt-6 p-4 bg-base-100 rounded-box shadow-lg animate-fade-in">
-            <h3 className="text-xl font-semibold mb-2 text-secondary">Output:</h3>
-            <pre className="whitespace-pre-wrap break-words text-sm text-base-content bg-base-300 p-4 rounded-md">
-              {typeof output === "string" ? output : JSON.stringify(output, null, 2)}
-            </pre>
-          </div>
-        )}
-      </div>
 
-      <div className="mt-10 w-full max-w-4xl">
-        {output && viewStatus === "ui" && (
-          <div className="mt-6 p-4 bg-base-100 rounded-box shadow-lg animate-fade-in">
-            {activeScript === "uiprocessor" && (
-              <ProcessorUi object={output as CpuStatus[]} />
-            )}
-            {activeScript === "uimemory" && (
-              <MemoryUi object={output as MemoryStatus} />
-            )}
-            {activeScript === "uidisks" && (
-              <DisksUi object={output as DisksStatus[]} />
-            )}
-            {activeScript === "uinetwork" && (
-              <NetworkMonitor object={output as NetworkUsage} />
-            )}
-            {activeScript === "uioverview" && (
-              <SystemOverview object={output as OverviewData} />
-            )}
-            {activeScript === "uiweb_integration" && (
-              <WebIntrgrationUi object={output as TelegramData} />
-            )}
-            {activeScript === "uiauto_heal" && (
-              <AutoHealUi />
-            )}
+      {
+        output === "stop" ?
+          <div className="w-full flex items-center justify-center mx-auto">
+            <img className="w-3/4 mt-10" src="/homepageVector.svg" alt="PC" />
           </div>
-        )}
-      </div>
+          :
+
+          <>
+            <div className="mt-5 w-full max-w-4xl">
+              {output && viewStatus === "terminal" && (
+                <div className="mt-6 p-4 bg-base-100 rounded-box shadow-lg animate-fade-in">
+                  <h3 className="text-xl font-semibold mb-2 text-secondary">Output:</h3>
+                  <pre className="whitespace-pre-wrap break-words text-sm text-base-content bg-base-300 p-4 rounded-md">
+                    {typeof output === "string" ? output : JSON.stringify(output, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-10 w-full max-w-4xl">
+              {output && viewStatus === "ui" && (
+                <div className="mt-6 p-4 bg-base-100 rounded-box shadow-lg animate-fade-in">
+                  {activeScript === "uiprocessor" && (
+                    <ProcessorUi object={output as CpuStatus[]} />
+                  )}
+                  {activeScript === "uimemory" && (
+                    <MemoryUi object={output as MemoryStatus} />
+                  )}
+                  {activeScript === "uidisks" && (
+                    <DisksUi object={output as DisksStatus[]} />
+                  )}
+                  {activeScript === "uinetwork" && (
+                    <NetworkMonitor object={output as NetworkUsage} />
+                  )}
+                  {activeScript === "uioverview" && (
+                    <SystemOverview object={output as OverviewData} />
+                  )}
+                  {activeScript === "uiweb_integration" && (
+                    <WebIntrgrationUi object={output as TelegramData} />
+                  )}
+                  {activeScript === "uiauto_heal" && (
+                    <AutoHealUi />
+                  )}
+                </div>
+              )}
+            </div>
+          </>
+}
+
 
 
       {/* Tailwind animations */}
@@ -220,6 +231,6 @@ export function Welcome() {
           }
         }
       `}</style>
-    </div>
+    </div >
   );
 }
